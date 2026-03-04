@@ -1,58 +1,25 @@
+// oque pode fazer para melhorar:
+// 1 tratar erros de digitação como por exemplo inserir um id errado
+// 2 fazer o view integração front e back
+// 3 tratar erro 404 dos de url
+// 4 parte de conexao dentro do repositorie tem que fazer até a proxima aula
+
 import express from 'express'
+import conexao from '../database/conexao.js'
+import SelecaoController from './app/controllers/SelecaoController.js'
 const app = express()
 
 // ler como formato json
 app.use(express.json())
 
-// Mock
-const selecoes = [
-    {id: 1, selecao: 'Brasil', grupo:'C'},
-    {id: 2, selecao: 'EUA', grupo:'A'},
-    {id: 3, selecao: 'Canada', grupo:'B'},
-    {id: 4, selecao: 'Alemanha', grupo:'D'},
-]
+app.get('/selecoes', SelecaoController.index())
 
-function buscarSelecaoPorId(id) {
-    return selecoes.filter(selecao => selecao.id == id)
-}
+app.post('/selecoes', SelecaoController.store())
 
-function buscarIndexPorId(id) {
-    return selecoes.find(selecao => selecao.id == id)
-}
+app.get('/selecoes/:id', SelecaoController.show())
 
-// se a pessoa digitar uma rota nao existente dar uma resposta para ela seja jogar ela para a pagina principal ou dar um status 
+app.put('/selecoes/:id', SelecaoController.update())
 
-// Criando uma rota padrão ou raiz
-app.get('/', (req, res)=> {
-    res.send('Hello World')
-})
-
-app.get('/selecoes', (req, res)=> {
-    res.send(selecoes)
-})
-
-app.post('/selecoes', (req, res)=> {
-    selecoes.push(req.body)
-    res.status(200).send('seleção cadastrada com sucesso')
-})
-
-app.get('/selecoes/:id', (req, res)=> {
-    // let index = req.params.id
-    // console.log(index)
-    res.json(buscarSelecaoPorId(req.params.id))
-})
-
-app.delete('/selecoes/:id', (req, res)=> {
-    let index = buscarIndexPorId(req.params.id)
-    selecoes.splice(index, 1)
-    res.send('selecao deletada com sucesso')
-})
-
-app.put('/selecoes/:id', (req, res)=> {
-    let index = buscarIndexPorId(req.params.id)
-    selecoes[index].selecao = req.body.selecao
-    selecoes[index].grupo   = req.body.grupo
-    res.send('Update feito com sucesso')
-})
+app.delete('/selecoes/:id', SelecaoController.delete())
 
 export default app
