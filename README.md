@@ -1,4 +1,4 @@
-#API de Seleções da Copa - Projeto Full Stack Senac
+# API de Seleções da Copa - Projeto Full Stack Senac
 
 API RESTful desenvolvida para o gerenciamento de seleções da Copa do Mundo, integrando uma interface reativa em React com um servidor robusto em Node.js.
 
