@@ -1,80 +1,62 @@
-import conexao from '../database/conexao.js'
+import SelecaoRepository from '../repositories/SelecaoRepository.js'
 
 class SelecaoController {
-    // listar, tudo
-    index(req, res) {
-        const sql = "SELECT * FROM dbselecao.dbcopa;"
-        conexao.query(sql, (erro, resultado) => {
-            if (erro) {
-                console.log(erro)
-                // Para fazer status 404
-            } else {
-                res.status(200).json(resultado)
-            }
-        })
+    // listar tudo
+    async index(req, res) {
+        try {
+            const resultado = await SelecaoRepository.findAll()
+            res.status(200).json(resultado)
+        } catch (erro) {
+            console.error('Erro no banco de dados:', erro)
+            res.status(500).json({ mensagem: 'Erro ao listar seleções' })
+        }
     }
 
     // listar por id
-    show(req, res) {
+    async show(req, res) {
         const id = req.params.id
-        const sql = "SELECT * FROM dbselecao.dbcopa WHERE id=?;"
-        conexao.query(sql, id, (erro, resultado) => {
-            const linha = resultado[0]
-            if (erro) {
-                console.log(erro)
-                // Para fazer status 404
-            } else {
-                res.status(200).json(linha)
-            }
-        })
+        const resultado = await SelecaoRepository.findById(id)
+        if (resultado.length > 0) {
+            res.status(200).json(resultado[0])
+        } else {
+            res.status(404).json({ mensagem: 'Seleção não encontrada' })
+        }
     }
 
     // Criar dados
-    store(req, res) {
+    async store(req, res) {
         const selecao = req.body
-        const sql = "INSERT INTO dbselecao.dbcopa SET ?;"
-        conexao.query(sql, selecao, (erro, resultado) => {
-            const linha = resultado[0]
-            if (erro) {
-                console.log(erro)
-                // Para fazer status 404
-            } else {
-                res.status(201).json(linha)
-            }
-        })
+        const resultado = await SelecaoRepository.create(selecao) 
+        res.status(201).json(selecao)
     }
 
     // Atualizar dados
-    update(req, res) {
-        const id = req.params.id
-        const sql = "UPDATE dbselecao.dbcopa SET ? WHERE id = ?;"
-        conexao.query(sql, id, (erro, resultado) => {
-            const linha = resultado[0]
-            if (erro) {
-                console.log(erro)
-                // Para fazer status 404
+    async update(req, res) {
+        try {
+            const id = req.params.id
+            const selecao = req.body
+            const resultado = await SelecaoRepository.update(selecao, id)
+            if (resultado.affectedRows > 0) {
+                res.status(200).json({ id, ...selecao})
             } else {
-                res.st
-                atus(200).json(linha)
+                res.status(404).json({ 'erro': 'Seleção não encontrada para atualizar' })            
             }
-        })
+        } catch (erro) {
+            res.status(500).json({ mensagem: 'Erro ao atualizar seleção' })
+        }
     }
 
     // Remover dados
-    delete(req, res) {
+    async delete(req, res) {
         const id = req.params.id
-        const sql = "DELETE FROM selecoes WHERE id = ?;"
-        conexao.query(sql, id, (erro, resultado) => {
-            const linha = resultado[0]
-            if (erro) {
-                console.log(erro)
-                // Para fazer status 404
-            } else {
-                res.status(200).json(linha)
-            }
-        })
+        const resultado = await SelecaoRepository.delete(id)
+        if (resultado.affectedRows > 0) {
+            res.status(200).json({ mensagem: `Seleção ${id} deletada com sucesso` })
+        } else {
+            res.status(404).json({mensagem: 'Seleção não encontrada para deletar'})
+        }
     }
-
 }
-// Padrão singleton (pesquisar e tomar nota)
+
+// Padrão singleton permite criar objetos únicos para os quais há apenas uma instância
 export default new SelecaoController()

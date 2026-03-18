@@ -1,0 +1,59 @@
+:root {
+  --pistachio: #93c572;
+  --dark-pistachio: #7aa55d;
+  --bg-color: #f0f4ef;
+}
+
+body {
+  background-color: var(--bg-color);
+  font-family: sans-serif;
+}
+
+.container {
+  max-width: 800px;
+  margin: 40px auto;
+  text-align: center;
+}
+
+.title {
+  color: var(--dark-pistachio);
+  margin-bottom: 30px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  border-bottom: 5px solid var(--pistachio);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.badge {
+  background: var(--pistachio);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.selecao-nome {
+  margin: 15px 0 5px;
+  color: #333;
+}
+
+.id-label {
+  color: #888;
+  font-size: 0.9rem;
+}
